@@ -320,5 +320,92 @@ public class Robot extends TimedRobot {
       return space+256;
     }
    }
-   
+   //IMPROVED ALGORITHM
+   /*public int spacer(int panel, int row, int col) {
+    // Convert to 0-based
+    int zeroCol = col - 1;
+    int zeroRow = row - 1;
+
+    // Each panel has 256 LEDs
+    int panelOffset = panel * 256;
+
+    // Base offset for this column
+    int base = zeroCol * 8;
+
+    int index;
+    if (zeroCol % 2 == 0) {
+        // even column → top to bottom
+        index = base + zeroRow;
+    } else {
+        // odd column → bottom to top
+        index = base + (7 - zeroRow);
+    }
+
+    return panelOffset + index;
+  }
+  */
+  /*public class LEDSubsystem extends SubsystemBase {
+
+    private static final int NUM_PANELS = 3;
+    private static final int ROWS = 8;
+    private static final int COLS = 32;
+
+    private final AddressableLED led;
+    private final AddressableLEDBuffer buffer;
+
+    public LEDSubsystem(int pwmPort) {
+        led = new AddressableLED(pwmPort);
+        buffer = new AddressableLEDBuffer(NUM_PANELS * ROWS * COLS);
+        led.setLength(buffer.getLength());
+        led.start();
+    }
+
+    @Override
+    public void periodic() {
+        led.setData(buffer);
+    }
+
+    // -------------------------
+    // High-level helper methods
+    // -------------------------
+
+    public void clear() {
+        for (int i = 0; i < buffer.getLength(); i++) {
+            buffer.setRGB(i, 0, 0, 0);
+        }
+    }
+
+    public void fill(int r, int g, int b) {
+        for (int i = 0; i < buffer.getLength(); i++) {
+            buffer.setRGB(i, r, g, b);
+        }
+    }
+
+    public void setPixel(int panel, int row, int col, int r, int g, int b) {
+        int index = map(panel, row, col);
+        buffer.setRGB(index, r, g, b);
+    }
+
+    // -------------------------
+    // Mapping function
+    // -------------------------
+
+    private int map(int panel, int row, int col) {
+        int zeroCol = col - 1;
+        int zeroRow = row - 1;
+
+        int panelOffset = panel * 256;
+        int base = zeroCol * 8;
+
+        int index;
+        if (zeroCol % 2 == 0) {
+            index = base + zeroRow;
+        } else {
+            index = base + (7 - zeroRow);
+        }
+
+        return panelOffset + index;
+    }
+  }
+  */
 }
