@@ -38,16 +38,17 @@ public class Robot extends TimedRobot {
    */
   LEDSubsystem led;
   XboxController control = new XboxController(0) ;
- public Robot() {
+  public Robot() {
     
   }
   @Override 
   public void robotInit() {
     led = new LEDSubsystem(9); // PUT LED PWMPORT HERE
+    led.setInfo();
   }
   @Override
   public void robotPeriodic() {
-    led.setInfo();
+    //led.setInfo(); commented as it made it crash out and fly
     led.voltageChecker();
   }
   @Override
@@ -66,17 +67,13 @@ public class Robot extends TimedRobot {
       led.clear();
     }
     if(control.getXButton()){
-      led.fillRow(1, 0, 10, 10, 10);
+      // led.fillRow(1, 1, 10, 10, 10);
+      led.setPixel(0, 1, 1, 10, 10, 10);
     }
     if(control.getYButton()){
-      led.fill(0,10,0);
+      led.fillRow(1, 3, 10,10,0);
+      led.fillColumn(1,4,20,30,4);
     }
-    // if(control.getYButton()){
-    //   for(var i = 0; i < 5; i++){
-    //     led.fill(10/i, 0, 0);
-        
-    //   }
-    // }
   }
   
   @Override
