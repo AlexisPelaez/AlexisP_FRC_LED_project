@@ -10,6 +10,9 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Percent;
 
+import java.io.Console;
+import java.util.logging.Logger;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Power;
@@ -24,7 +27,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 
 public class LEDSubsystem{
     
-    private static final int NUM_PANELS = 4; // CHANGE FOR AMOUNT OF PANELS
+    private static final int NUM_PANELS = 3; // CHANGE FOR AMOUNT OF PANELS
     private static final int ROWS = 8;  //CHANGE FOR AMOUNT OF ROWS
     private static final int COLS = 32; //CHANGE FOR AMOUNT OF COLS
 
@@ -63,8 +66,9 @@ public class LEDSubsystem{
     public void setPixel(int panel, int row, int col, int r, int g, int b){
         int index = map(panel, row, col);
         buffer.setRGB(index, r, g, b);
+        SmartDashboard.putNumber("mapped index output", index);
     }
-
+    // checks voltage
     public void voltageChecker(){
         voltage = pdh.getVoltage();
         SmartDashboard.putNumber("PDH VOLTAGE", voltage);
@@ -98,9 +102,42 @@ public class LEDSubsystem{
         }
         led.setData(buffer);
     }
+    public void fillRow(int panel, int row, int r, int g, int b) {
+        for (int col = 1; col <= COLS; col++) {
+            setPixel(panel, row, col, r, g, b);
+        }
+    }
+    public void fillColumn(int panel, int col, int r, int g, int b) {
+        for (int rowI = 1; rowI <= ROWS; rowI++) {
+            setPixel(panel, rowI, col, r, g, b);
+        }
+    }
+    
+    public void fillRowColumnMajor(int panel, int row, int r, int g, int b) {
+        for (int col = 1; col <= COLS; col++) {
+            setPixel(panel, col, row, r, g, b);
+        }
+    }
+    public void fillRowColumnSerpentine(int panel, int row, int r, int g, int b) {
+        for (int col = 1; col <= COLS; col++) {
+            setPixel(panel, row, col, r, g, b);
+        }
+    }
+    public void fillRowSerpentine(int panel, int row, int r, int g, int b) {
+    if ((row - 1) % 2 == 0) {
+        for (int col = 1; col <= COLS; col++) {
+            setPixel(panel, row, col, r, g, b);
+        }
+    } else {
+        for (int col = COLS; col >= 1; col--) {
+            setPixel(panel, row, col, r, g, b);
+        }
+    }
+}
+
+
 
     //ALGORITHM FOR LED 8x32 MATRIX
-   //POTENTIALLY UPDATE ALGORITHM (not sure if it works 100%...)
 
     private int map(int panel, int row, int col){
         // Convert to 0-based
@@ -109,11 +146,10 @@ public class LEDSubsystem{
 
         // Each panel has 256 LEDs
         int panelOffset = panel * 256;
-
         // Base offset for this column
         int base = zeroCol * 8;
 
-        int index;
+        int index = 0;
         if (zeroCol % 2 == 0) {
             // even column → top to bottom
             index = base + zeroRow;
@@ -122,7 +158,15 @@ public class LEDSubsystem{
             index = base + (7 - zeroRow);
         }
 
+        // update coordinates 
+        SmartDashboard.putNumber("zerocol", row);
+        SmartDashboard.putNumber("zerorow", col);
+        SmartDashboard.putNumber("panel", panel);
+
         return panelOffset + index;
+        
+        //ALGORITHM BELOW MAY OR MAY NOT WORK
+
         /*
         // Convert to 0‑based
         int zeroRow = row - 1;
@@ -137,6 +181,4 @@ public class LEDSubsystem{
         return index;
         */
     }
-
 }
-
