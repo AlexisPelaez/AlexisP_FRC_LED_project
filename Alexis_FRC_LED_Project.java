@@ -77,7 +77,7 @@ public class LEDSubsystem{
         if (voltage < 12) {
             voltageDanger = true; 
         }
-        if (voltage > 10) { // must rise ABOVE this to clear
+        if (voltage > 10.8) { // must rise ABOVE this to clear
             voltageDanger = false;
         }
 
@@ -112,30 +112,6 @@ public class LEDSubsystem{
             setPixel(panel, rowI, col, r, g, b);
         }
     }
-    
-    public void fillRowColumnMajor(int panel, int row, int r, int g, int b) {
-        for (int col = 1; col <= COLS; col++) {
-            setPixel(panel, col, row, r, g, b);
-        }
-    }
-    public void fillRowColumnSerpentine(int panel, int row, int r, int g, int b) {
-        for (int col = 1; col <= COLS; col++) {
-            setPixel(panel, row, col, r, g, b);
-        }
-    }
-    public void fillRowSerpentine(int panel, int row, int r, int g, int b) {
-    if ((row - 1) % 2 == 0) {
-        for (int col = 1; col <= COLS; col++) {
-            setPixel(panel, row, col, r, g, b);
-        }
-    } else {
-        for (int col = COLS; col >= 1; col--) {
-            setPixel(panel, row, col, r, g, b);
-        }
-    }
-}
-
-
 
     //ALGORITHM FOR LED 8x32 MATRIX
 
@@ -182,3 +158,4 @@ public class LEDSubsystem{
         */
     }
 }
+
