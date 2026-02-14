@@ -91,9 +91,9 @@ public class LEDSubsystem{
         values[0] = (int)(Math.random()*4);
         values[1] = (int)(Math.random()*8)+1;
         values[2] = (int)(Math.random()*32)+1;
-        values[3] = (int)(Math.random()*9)+1;
-        values[4] = (int)(Math.random()*9)+1;
-        values[5] = (int)(Math.random()*9)+1;
+        values[3] = (int)(Math.random()*123)+1;
+        values[4] = (int)(Math.random()*123)+1;
+        values[5] = (int)(Math.random()*123)+1;
         return values;
     }
 
