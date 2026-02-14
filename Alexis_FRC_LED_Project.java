@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 
 public class LEDSubsystem{
     
-    private static final int NUM_PANELS = 3; // CHANGE FOR AMOUNT OF PANELS
+    private static final int NUM_PANELS = 4; // CHANGE FOR AMOUNT OF PANELS
     private static final int ROWS = 8;  //CHANGE FOR AMOUNT OF ROWS
     private static final int COLS = 32; //CHANGE FOR AMOUNT OF COLS
 
@@ -38,6 +38,10 @@ public class LEDSubsystem{
     private Timer flashTimer = new Timer();
     private boolean voltageDanger = false;
     private boolean flashState = false;
+    private boolean fastMode = false;
+    private Timer fastFlashTimer = new Timer();
+    private boolean fastFlashState = false;
+
 
     public LEDSubsystem(int pwmPort) { 
         led = new AddressableLED(pwmPort);
@@ -45,12 +49,13 @@ public class LEDSubsystem{
         led.setLength(buffer.getLength());
         led.start();
         flashTimer.start();
+        fastFlashTimer.start();
     }
 
     public void setInfo(){
         led.setData(buffer);
     }
-
+    // HELPER FUNCTIONS BELOW
     public void clear(){
         for(int i = 0; i < buffer.getLength(); i++){
             buffer.setRGB(i, 0, 0, 0);
@@ -63,12 +68,63 @@ public class LEDSubsystem{
         }
     }
 
+    public void fillRow(int panel, int row, int r, int g, int b) {
+        for (int col = 1; col <= COLS; col++) {
+            setPixel(panel, row, col, r, g, b);
+        }
+    }
+    public void fillColumn(int panel, int col, int r, int g, int b) {
+        for (int rowI = 1; rowI <= ROWS; rowI++) {
+            setPixel(panel, rowI, col, r, g, b);
+        }
+    }
+
+    // SETS A SPECIFIC LED WITH COLORS OF YOUR CHOICE
     public void setPixel(int panel, int row, int col, int r, int g, int b){
         int index = map(panel, row, col);
         buffer.setRGB(index, r, g, b);
         SmartDashboard.putNumber("mapped index output", index);
     }
-    // checks voltage
+
+    public int[] randomizer(){
+        int[] values = new int[6];
+        values[0] = (int)(Math.random()*4);
+        values[1] = (int)(Math.random()*8)+1;
+        values[2] = (int)(Math.random()*32)+1;
+        values[3] = (int)(Math.random()*9)+1;
+        values[4] = (int)(Math.random()*9)+1;
+        values[5] = (int)(Math.random()*9)+1;
+        return values;
+    }
+
+    //SPECIAL FUNCTIONS
+
+    // SPEEDS UP THE LED CHANGES
+    public void Overclock(boolean enable) {
+        fastMode = enable;
+    }
+
+    // CODE THAT MAKES THE LED UPDATE ANY # of ms
+    public void startFastUpdates() {
+        Thread t = new Thread(() -> {
+            while (true) {
+                if(fastMode){
+                    //IF THERE IS A CERTAIN FUNCTION YOU WANT TO OVERCLOCK
+                    //PUT IT RIGHT BELOW THIS TEXT
+                    flashEffect();
+                    led.setData(buffer);
+                }
+                try {
+                    Thread.sleep(2); // update every 2ms (200 Hz)
+                                            // ALSO THE NUMBER TO INCREASE SPEED
+                } catch (Exception e) {}
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+    
+    // CHECKS VOLTAGE
     public void voltageChecker(){
         voltage = pdh.getVoltage();
         SmartDashboard.putNumber("PDH VOLTAGE", voltage);
@@ -100,17 +156,10 @@ public class LEDSubsystem{
             led.setData(buffer);
             return;   // Prevents other LED code from overwriting the warning
         }
-        led.setData(buffer);
-    }
-    public void fillRow(int panel, int row, int r, int g, int b) {
-        for (int col = 1; col <= COLS; col++) {
-            setPixel(panel, row, col, r, g, b);
+        if (!fastMode) {
+            led.setData(buffer);
         }
-    }
-    public void fillColumn(int panel, int col, int r, int g, int b) {
-        for (int rowI = 1; rowI <= ROWS; rowI++) {
-            setPixel(panel, rowI, col, r, g, b);
-        }
+
     }
 
     //ALGORITHM FOR LED 8x32 MATRIX
@@ -140,22 +189,27 @@ public class LEDSubsystem{
         SmartDashboard.putNumber("panel", panel);
 
         return panelOffset + index;
-        
-        //ALGORITHM BELOW MAY OR MAY NOT WORK
-
-        /*
-        // Convert to 0‑based
-        int zeroRow = row - 1;
-        int zeroCol = col - 1;
-
-        // Each panel has 256 LEDs
-        int panelOffset = panel * (ROWS * COLS);
-
-        // Row-major order (left → right, top → bottom)
-        int index = panelOffset + zeroRow * COLS + zeroCol;
-
-        return index;
-        */
     }
-}
+    public void sparkle(){
+      int val[] = randomizer();
+      setPixel(val[0], val[1], val[2], val[3], val[4], val[5]);
+    }
+    public void flashEffect() {
+        if (!fastMode) return;
 
+        // Toggle every 50ms (20 flashes per second)
+        if (fastFlashTimer.get() > 0.05) {
+            fastFlashState = !fastFlashState;
+            fastFlashTimer.reset();
+        }
+
+        if (fastFlashState) {
+            int val[] = randomizer();
+            setPixel(val[0], val[1], val[2], val[3], val[4], val[5]);
+        } else {
+            // OFF phase — clear the whole matrix
+            clear();
+        }
+    }
+
+}
