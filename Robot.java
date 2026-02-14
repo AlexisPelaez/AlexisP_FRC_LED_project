@@ -15,6 +15,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Percent;
 
+import java.util.Random;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Power;
@@ -45,6 +47,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     led = new LEDSubsystem(9); // PUT LED PWMPORT HERE
     led.setInfo();
+    led.startFastUpdates();
   }
   @Override
   public void robotPeriodic() {
@@ -60,19 +63,30 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopPeriodic() {
+    if(control.getStartButtonPressed()){
+      led.Overclock(true); // OVERCLOCK
+    }
     if(control.getAButton()){
       led.fill(0, 0, 10);
     }
     if(control.getBButton()){
       led.clear();
+      led.Overclock(false);
     }
     if(control.getXButton()){
-      // led.fillRow(1, 1, 10, 10, 10);
-      led.setPixel(0, 1, 1, 10, 10, 10);
+      led.sparkle();
     }
     if(control.getYButton()){
-      led.fillRow(1, 3, 10,10,0);
-      led.fillColumn(1,4,20,30,4);
+      led.fillRow(0, 1, 10, 10, 10);
+      led.fillRow(0, 8, 10, 10, 10);
+      led.fillRow(0, 4, 10, 10, 10);
+      led.fillRow(0, 5, 10, 10, 10);
+      led.fillRow(0, 2, 0, 0, 10);
+      led.fillRow(0, 3, 0, 0, 10);
+      led.fillRow(0, 2, 0, 0, 10);
+      led.fillRow(0, 3, 0, 0, 10);
+      led.fillRow(0, 6, 0, 0, 10);
+      led.fillRow(0, 7, 0, 0, 10);
     }
   }
   
