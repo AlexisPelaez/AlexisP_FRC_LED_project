@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -18,12 +18,8 @@ import static edu.wpi.first.units.Units.Percent;
 import java.util.Random;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Power;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.AddressableLEDBufferView;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
@@ -38,14 +34,14 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  LEDSubsystem led;
+  LED_Subsystem led;
   XboxController control = new XboxController(0) ;
   public Robot() {
     
   }
   @Override 
   public void robotInit() {
-    led = new LEDSubsystem(9); // PUT LED PWMPORT HERE
+    led = new LED_Subsystem(9); // PUT LED PWMPORT HERE
     led.setInfo();
     led.startFastUpdates();
   }
@@ -67,7 +63,8 @@ public class Robot extends TimedRobot {
       led.Overclock(true); // OVERCLOCK
     }
     if(control.getAButton()){
-      led.fill(0, 0, 10);
+      // led.fill(0, 0, 10);
+      led.fillRectangle(1, 2, 3, 3, 3, 2, 5, 3);
     }
     if(control.getBButton()){
       led.clear();
