@@ -1,7 +1,6 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -14,18 +13,16 @@ import java.io.Console;
 import java.util.logging.Logger;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Power;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.AddressableLEDBufferView;
-import edu.wpi.first.wpilibj.LEDPattern;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
 
 
-public class LEDSubsystem{
+public class LED_Subsystem{
     
     private static final int NUM_PANELS = 4; // CHANGE FOR AMOUNT OF PANELS
     private static final int ROWS = 8;  //CHANGE FOR AMOUNT OF ROWS
@@ -43,7 +40,7 @@ public class LEDSubsystem{
     private boolean fastFlashState = false;
 
 
-    public LEDSubsystem(int pwmPort) { 
+    public LED_Subsystem(int pwmPort) { 
         led = new AddressableLED(pwmPort);
         buffer = new AddressableLEDBuffer(NUM_PANELS * ROWS * COLS); //LENGTH GOES IN
         led.setLength(buffer.getLength());
@@ -76,6 +73,14 @@ public class LEDSubsystem{
     public void fillColumn(int panel, int col, int r, int g, int b) {
         for (int rowI = 1; rowI <= ROWS; rowI++) {
             setPixel(panel, rowI, col, r, g, b);
+        }
+    }
+    public void fillRectangle(int panel, int rowPos, int colPos, int rowSize, int colSize, int r, int g, int b){
+        for(int iR = 0; iR < colSize; iR++){
+            int rowOffset = iR; // stupid
+            for(int iC = 0; iC < rowSize; iC++){
+                setPixel(panel, rowPos + rowOffset, colPos + iC, r, g, b);
+            }
         }
     }
 
