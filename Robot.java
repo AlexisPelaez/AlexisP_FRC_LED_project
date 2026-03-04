@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.subsystems.leds.CANdleSystem;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -39,10 +40,9 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   LEDSubsystem led;
-  XboxController control = new XboxController(0) ;
-  public Robot() {
-    
-  }
+  XboxController control = new XboxController(0);
+  CANdleSystem candle = new CANdleSystem();
+  public Robot() {}
   @Override 
   public void robotInit() {
     led = new LEDSubsystem(9); // PUT LED PWMPORT HERE
@@ -77,16 +77,13 @@ public class Robot extends TimedRobot {
       led.sparkle();
     }
     if(control.getYButton()){
-      led.fillRow(0, 1, 10, 10, 10);
-      led.fillRow(0, 8, 10, 10, 10);
-      led.fillRow(0, 4, 10, 10, 10);
-      led.fillRow(0, 5, 10, 10, 10);
-      led.fillRow(0, 2, 0, 0, 10);
-      led.fillRow(0, 3, 0, 0, 10);
-      led.fillRow(0, 2, 0, 0, 10);
-      led.fillRow(0, 3, 0, 0, 10);
-      led.fillRow(0, 6, 0, 0, 10);
-      led.fillRow(0, 7, 0, 0, 10);
+      candle.rainbowAnim();
+    }
+    if(control.getLeftBumperButtonPressed()){
+      candle.fireAnim();
+    }
+    if(control.getRightBumperButtonPressed()){
+      candle.larsonAnim();
     }
   }
   
