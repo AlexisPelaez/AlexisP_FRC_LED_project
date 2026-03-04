@@ -85,7 +85,7 @@ public class LEDSubsystem{
         buffer.setRGB(index, r, g, b);
         SmartDashboard.putNumber("mapped index output", index);
     }
-
+    
     public int[] randomizer(){
         int[] values = new int[6];
         values[0] = (int)(Math.random()*4);
